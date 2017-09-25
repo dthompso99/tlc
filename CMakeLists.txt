@@ -1,28 +1,23 @@
 cmake_minimum_required(VERSION 3.2)
-project(TLC)
+project(TLC VERSION 0.1 LANGUAGES CXX C)
+
+include(GNUInstallDirs)
+
+OPTION(TLC_BUILD_TEST "Build Test, or just library" ON)
 
 SET(BUILD_SHARED_LIBS, OFF)
 SET(GLFW_BUILD_EXAMPLES, OFF)
 SET(GLFW_BUILD_TESTS, OFF)
 SET(GLFW_BUILD_DOCS, OFF)
 
+ADD_SUBDIRECTORY("./app")
 
-add_subdirectory(vendor/glfw)
-
-INCLUDE_DIRECTORIES(app/include vendor/glfw/include vendor/glad/include)
-
-FILE(GLOB SOURCE_FILES app/src/*.cpp vendor/glad/src/glad.c)
-
-add_executable(${PROJECT_NAME} ${SOURCE_FILES})
+IF (TLC_BUILD_TEST)
+	ADD_SUBDIRECTORY("./test")
+	ADD_TEST(window tlctest)
+ENDIF()
 
 
-
-target_link_libraries (${PROJECT_NAME} glfw ${GLFW_LIBRARIES})
-
-add_custom_command(TARGET ${PROJECT_NAME} PRE_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/resources $<TARGET_FILE_DIR:${PROJECT_NAME}>/resources)
-
-install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION "." COMPONENT centauri)
-install(DIRECTORY "${PROJECT_SOURCE_DIR}/resources" DESTINATION "." COMPONENT centauri)
 
 set(CPACK_PACKAGE_NAME ${PROJECT_NAME})
 set(CPACK_PACKAGE_VENDOR "thompsoninnovations.com")

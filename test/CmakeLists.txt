@@ -1,0 +1,2 @@
+add_executable (tlctest test.cpp)
+target_link_libraries(tlctest ${TLC_LIBS})
